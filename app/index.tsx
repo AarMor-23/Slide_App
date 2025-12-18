@@ -1,4 +1,13 @@
+import { navigate } from "expo-router/build/global-state/routing";
+import { useEffect } from "react";
 import { Text, View } from "react-native";
+
+useEffect(() => {
+  return () => {
+    navigate('/auth/userLogin');
+  }
+}, [])
+
 
 export default function Index() {
   return (
