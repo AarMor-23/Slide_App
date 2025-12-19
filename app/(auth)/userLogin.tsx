@@ -44,7 +44,7 @@ export default function UserLogin() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#151515" }}>
       {/* Extra safety: ensure no header for this screen */}
       <Stack.Screen options={{ headerShown: false }} />
 
@@ -63,7 +63,7 @@ export default function UserLogin() {
                 style={{
                   fontSize: 48,
                   fontWeight: "800",
-                  color: "#7ac6f5",
+                  color: "#73ffad",
                   letterSpacing: -0.4,
                 }}
               >
@@ -73,7 +73,7 @@ export default function UserLogin() {
 
             {/* Form */}
             <View style={{ marginTop: 26, gap: 14 }}>
-              <FieldLabel label="Email" />
+              <Text style={{color: "#fff"}}>Email</Text>
               <TextInput
                 value={email}
                 onChangeText={setEmail}
@@ -86,7 +86,7 @@ export default function UserLogin() {
               />
 
               <View style={{ marginTop: 6 }}>
-                <FieldLabel label="Password" />
+                <Text style={{ color: "#fff" }}>Password</Text>
               </View>
 
               <View style={styles.passwordWrap}>
@@ -138,7 +138,7 @@ export default function UserLogin() {
                   >
                     {remember ? <View style={styles.checkboxDot} /> : null}
                   </View>
-                  <Text style={{ color: "#111", fontSize: 14 }}>
+                  <Text style={{ color: "#fff", fontSize: 14 }}>
                     Remember me
                   </Text>
                 </Pressable>
@@ -193,8 +193,16 @@ export default function UserLogin() {
                 <Text style={{ color: "#555", fontSize: 14 }}>
                   New here?{" "}
                   <Link href="/(auth)/userRegister" asChild>
-                    <Text style={{ color: "#111", fontWeight: "700" }}>
+                    <Text style={{ color: "#73ffad", fontWeight: "700" }}>
                       Create an account
+                    </Text>
+                  </Link>
+                </Text>
+                <Text style={{ color: "#555", fontSize: 14, marginTop: 10 }}>
+                  Are You a Business?{" "}
+                  <Link href="/(auth)/businessLogin" asChild>
+                    <Text style={{ color: "#73ffad", fontWeight: "700" }}>
+                      Login
                     </Text>
                   </Link>
                 </Text>
@@ -240,11 +248,11 @@ const styles = {
     height: 52,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "#e6e6e6",
+    borderColor: "#fff",
     paddingHorizontal: 14,
     fontSize: 15,
-    color: "#111",
-    backgroundColor: "#fff",
+    color: "#fff",
+    backgroundColor: "#151515",
     marginTop: 8,
   } as const,
 
@@ -253,7 +261,7 @@ const styles = {
     alignItems: "center",
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "#e6e6e6",
+    borderColor: "#fff",
     backgroundColor: "#fff",
     marginTop: 8,
     paddingLeft: 0,
@@ -265,7 +273,7 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     borderLeftWidth: 1,
-    borderLeftColor: "#ededed",
+    borderLeftColor: "#fff",
   } as const,
 
   checkbox: {
@@ -279,7 +287,7 @@ const styles = {
     backgroundColor: "#fff",
   } as const,
   checkboxOn: {
-    backgroundColor: "#111",
+    backgroundColor: "#73ffad",
   } as const,
   checkboxDot: {
     width: 8,
@@ -291,7 +299,7 @@ const styles = {
   primaryBtn: {
     height: 54,
     borderRadius: 16,
-    backgroundColor: "#111",
+    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
     marginTop: 12,
@@ -302,7 +310,7 @@ const styles = {
     elevation: 2,
   } as const,
   primaryBtnText: {
-    color: "#fff",
+    color: "#000",
     fontSize: 15,
     fontWeight: "700",
     letterSpacing: 0.2,
