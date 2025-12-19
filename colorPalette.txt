@@ -1,0 +1,5 @@
+Dark Mode Colors:
+
+Primary: #73ffad
+Secondary: 
+Background: #151515
