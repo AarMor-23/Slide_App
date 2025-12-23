@@ -1,5 +1,6 @@
-// Home.js (Student/User Home) — “Find something good fast” + personal, not cluttered
-// Drop into: app/(tabs)/Home.js  (or wherever your user home screen lives)
+// Home.js (Student/User Home) — dark theme to match auth screens
+// Theme: Primary #73ffad, Background #151515
+// Sections: Top bar, search, chips, For You, Trending, Categories, New deals, Friends activity
 
 import { Ionicons } from "@expo/vector-icons";
 import React, { useMemo, useState } from "react";
@@ -20,16 +21,15 @@ import {
 const { width: W } = Dimensions.get("window");
 
 const COLORS = {
-  bg: "#FFFFFF",
-  text: "#111111",
-  muted: "rgba(17,17,17,0.60)",
-  faint: "rgba(17,17,17,0.40)",
-  card: "#FFFFFF",
-  border: "rgba(0,0,0,0.08)",
-  chipBg: "rgba(0,0,0,0.05)",
-  chipActiveBg: "rgba(0,0,0,0.10)",
-  primary: "#111111", // keep neutral for now (change later)
-  accent: "#73ffad",  // optional accent if you want (not used heavily)
+  primary: "#73ffad",
+  bg: "#151515",
+  text: "#F5F5F5",
+  muted: "rgba(245,245,245,0.65)",
+  faint: "rgba(245,245,245,0.40)",
+  card: "rgba(255,255,255,0.06)",
+  card2: "rgba(255,255,255,0.04)",
+  border: "rgba(255,255,255,0.10)",
+  danger: "rgba(255,120,120,0.95)",
 };
 
 export default function Home() {
@@ -61,7 +61,6 @@ export default function Home() {
       distance: "0.4 mi",
       timeLeft: "2d left",
       image: "https://picsum.photos/900/700?random=41",
-      tag: "For You • Rotates daily",
     }),
     []
   );
@@ -148,6 +147,8 @@ export default function Home() {
     []
   );
 
+  const [activePhoto, setActivePhoto] = useState(0);
+
   const toggleChip = (label: string) => {
     setActiveChips((prev) => {
       if (prev.includes(label)) return prev.filter((x) => x !== label);
@@ -156,7 +157,10 @@ export default function Home() {
   };
 
   const onSearch = () => {
-    Alert.alert("Search", query.trim() ? `Searching: "${query}"` : "Type something to search");
+    Alert.alert(
+      "Search",
+      query.trim() ? `Searching: "${query}"` : "Type something to search"
+    );
   };
 
   return (
@@ -178,11 +182,7 @@ export default function Home() {
 
           <View style={styles.iconRow}>
             <IconBtn icon="calendar-outline" onPress={() => Alert.alert("Calendar", "Later")} />
-            <IconBtn
-              icon="notifications-outline"
-              badge="1"
-              onPress={() => Alert.alert("Notifications", "Later")}
-            />
+            <IconBtn icon="notifications-outline" badge="1" onPress={() => Alert.alert("Notifications", "Later")} />
             <IconBtn icon="menu-outline" onPress={() => Alert.alert("Menu", "Later")} />
           </View>
         </View>
@@ -195,7 +195,7 @@ export default function Home() {
               value={query}
               onChangeText={setQuery}
               placeholder="Search coffee, boba, under $10, open now"
-              placeholderTextColor="rgba(17,17,17,0.35)"
+              placeholderTextColor="rgba(245,245,245,0.35)"
               style={styles.searchInput}
               returnKeyType="search"
               onSubmitEditing={onSearch}
@@ -245,9 +245,10 @@ export default function Home() {
         >
           <ImageBackground source={{ uri: forYou.image }} style={styles.featureCard} imageStyle={styles.featureImg}>
             <View style={styles.featureOverlay} />
+
             <View style={styles.featureTop}>
-              <View style={styles.pillLight}>
-                <Text style={styles.pillLightText}>{forYou.tag}</Text>
+              <View style={styles.pill}>
+                <Text style={styles.pillText}>For You</Text>
               </View>
             </View>
 
@@ -269,7 +270,7 @@ export default function Home() {
                   onPress={() => Alert.alert("Saved", "Saved!")}
                   style={({ pressed }) => [styles.secondaryBtn, pressed && { opacity: 0.85 }]}
                 >
-                  <Ionicons name="heart-outline" size={18} color="#fff" />
+                  <Ionicons name="heart-outline" size={18} color={COLORS.primary} />
                   <Text style={styles.secondaryBtnText}>Save</Text>
                 </Pressable>
               </View>
@@ -346,7 +347,7 @@ export default function Home() {
             >
               <Image source={{ uri: d.image }} style={styles.feedImg} />
               <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+                <View style={styles.feedTopRow}>
                   <Text style={styles.feedTitle} numberOfLines={1}>
                     {d.title}
                   </Text>
@@ -384,9 +385,7 @@ export default function Home() {
         {/* 7) Friends activity (optional) */}
         <View style={[styles.sectionRow, { marginTop: 18 }]}>
           <Text style={styles.sectionTitle}>Friends activity</Text>
-          <Pressable onPress={() => Alert.alert("Settings", "Toggle this section in settings later")} hitSlop={10}>
-            <Text style={styles.sectionRight}>Optional</Text>
-          </Pressable>
+          <Text style={styles.sectionRight}>Optional</Text>
         </View>
 
         <View style={{ gap: 10, marginTop: 10, paddingBottom: 30 }}>
@@ -396,8 +395,9 @@ export default function Home() {
                 <Text style={styles.avatarText}>{initials(f.who)}</Text>
               </View>
               <Text style={styles.friendText}>
-                <Text style={{ fontWeight: "800" }}>{f.who}</Text> {f.action}{" "}
-                <Text style={{ fontWeight: "800" }}>{f.what}</Text>
+                <Text style={{ fontWeight: "900", color: COLORS.text }}>{f.who}</Text>{" "}
+                {f.action}{" "}
+                <Text style={{ fontWeight: "900", color: COLORS.text }}>{f.what}</Text>
               </Text>
             </View>
           ))}
@@ -438,14 +438,12 @@ function IconBtn({ icon, badge, onPress }: { icon: string; badge?: string; onPre
   );
 }
 
-function initials(name: string) {
+function initials(name) {
   const parts = name.trim().split(" ");
   const a = parts[0]?.[0] ?? "";
   const b = parts[1]?.[0] ?? "";
   return (a + b).toUpperCase();
 }
-
-/* ---------- styles ---------- */
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLORS.bg },
@@ -465,7 +463,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.border,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(255,255,255,0.04)",
   },
   badgeDot: {
     position: "absolute",
@@ -474,12 +472,12 @@ const styles = StyleSheet.create({
     minWidth: 16,
     height: 16,
     borderRadius: 999,
-    backgroundColor: "#111",
+    backgroundColor: COLORS.primary,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 4,
   },
-  badgeDotText: { color: "#fff", fontSize: 10, fontWeight: "900" },
+  badgeDotText: { color: COLORS.bg, fontSize: 10, fontWeight: "900" },
 
   searchRow: { flexDirection: "row", alignItems: "center", gap: 10, marginTop: 14 },
   searchWrap: {
@@ -488,7 +486,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: COLORS.border,
-    backgroundColor: "rgba(0,0,0,0.03)",
+    backgroundColor: "rgba(255,255,255,0.04)",
     paddingHorizontal: 12,
     flexDirection: "row",
     alignItems: "center",
@@ -504,28 +502,28 @@ const styles = StyleSheet.create({
     borderColor: COLORS.border,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(255,255,255,0.04)",
   },
 
   chip: {
     paddingHorizontal: 12,
     paddingVertical: 9,
     borderRadius: 999,
-    backgroundColor: COLORS.chipBg,
+    backgroundColor: "rgba(255,255,255,0.04)",
     borderWidth: 1,
     borderColor: COLORS.border,
   },
   chipActive: {
-    backgroundColor: COLORS.chipActiveBg,
-    borderColor: "rgba(0,0,0,0.14)",
+    backgroundColor: "rgba(115,255,173,0.12)",
+    borderColor: "rgba(115,255,173,0.30)",
   },
   chipText: { color: COLORS.text, fontWeight: "700", fontSize: 13 },
-  chipTextActive: { fontWeight: "900" },
+  chipTextActive: { color: COLORS.primary, fontWeight: "900" },
 
   sectionRow: { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginTop: 16 },
   sectionTitle: { color: COLORS.text, fontSize: 16, fontWeight: "900" },
   sectionRight: { color: COLORS.faint, fontSize: 12, fontWeight: "700" },
-  link: { color: COLORS.text, fontSize: 12, fontWeight: "900" },
+  link: { color: COLORS.primary, fontSize: 12, fontWeight: "900" },
 
   featureCard: {
     width: "100%",
@@ -536,21 +534,22 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.border,
     justifyContent: "space-between",
+    backgroundColor: COLORS.card2,
   },
   featureImg: { borderRadius: 20 },
-  featureOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.32)",
-  },
+  featureOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.40)" },
+
   featureTop: { padding: 14 },
-  pillLight: {
+  pill: {
     alignSelf: "flex-start",
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.92)",
+    backgroundColor: "rgba(21,21,21,0.70)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.12)",
   },
-  pillLightText: { color: "#111", fontSize: 12, fontWeight: "900" },
+  pillText: { color: COLORS.text, fontSize: 12, fontWeight: "900" },
 
   featureBottom: { padding: 14 },
   featureTitle: { color: "#fff", fontSize: 20, fontWeight: "900", letterSpacing: -0.3 },
@@ -561,51 +560,46 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 46,
     borderRadius: 16,
-    backgroundColor: "#fff",
+    backgroundColor: COLORS.primary,
     alignItems: "center",
     justifyContent: "center",
   },
-  primaryBtnText: { color: "#111", fontWeight: "900", fontSize: 14 },
+  primaryBtnText: { color: COLORS.bg, fontWeight: "900", fontSize: 14 },
 
   secondaryBtn: {
     flex: 1,
     height: 46,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.55)",
-    backgroundColor: "rgba(0,0,0,0.18)",
+    borderColor: "rgba(115,255,173,0.35)",
+    backgroundColor: "rgba(115,255,173,0.10)",
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
     gap: 8,
   },
-  secondaryBtnText: { color: "#fff", fontWeight: "900", fontSize: 14 },
+  secondaryBtnText: { color: COLORS.primary, fontWeight: "900", fontSize: 14 },
 
   trendCard: {
     width: 170,
     borderRadius: 18,
     borderWidth: 1,
     borderColor: COLORS.border,
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(255,255,255,0.04)",
     overflow: "hidden",
   },
-  trendImg: { width: "100%", height: 110, backgroundColor: "rgba(0,0,0,0.05)" },
+  trendImg: { width: "100%", height: 110, backgroundColor: "rgba(255,255,255,0.05)" },
   trendTitle: { paddingHorizontal: 12, paddingTop: 10, color: COLORS.text, fontWeight: "900", fontSize: 13 },
   trendBiz: { paddingHorizontal: 12, paddingTop: 4, color: COLORS.muted, fontWeight: "700", fontSize: 12 },
   trendProof: { paddingHorizontal: 12, paddingTop: 6, paddingBottom: 12, color: COLORS.faint, fontWeight: "700", fontSize: 12 },
 
-  grid: {
-    marginTop: 10,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-  },
+  grid: { marginTop: 10, flexDirection: "row", flexWrap: "wrap", gap: 10 },
   catCard: {
     width: (W - 16 * 2 - 10 * 3) / 4,
     borderRadius: 18,
     borderWidth: 1,
     borderColor: COLORS.border,
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(255,255,255,0.04)",
     paddingVertical: 12,
     alignItems: "center",
     justifyContent: "center",
@@ -615,9 +609,11 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 14,
-    backgroundColor: "rgba(0,0,0,0.05)",
+    backgroundColor: "rgba(255,255,255,0.06)",
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   catText: { color: COLORS.text, fontSize: 11, fontWeight: "900", textAlign: "center" },
 
@@ -628,10 +624,11 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     borderWidth: 1,
     borderColor: COLORS.border,
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(255,255,255,0.04)",
     alignItems: "center",
   },
-  feedImg: { width: 88, height: 88, borderRadius: 16, backgroundColor: "rgba(0,0,0,0.06)" },
+  feedImg: { width: 88, height: 88, borderRadius: 16, backgroundColor: "rgba(255,255,255,0.06)" },
+  feedTopRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 },
   feedTitle: { color: COLORS.text, fontSize: 14, fontWeight: "900", flex: 1 },
   feedBiz: { color: COLORS.muted, marginTop: 4, fontSize: 12, fontWeight: "700" },
   feedMeta: { color: COLORS.faint, marginTop: 6, fontSize: 12, fontWeight: "700" },
@@ -640,7 +637,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 999,
-    backgroundColor: "rgba(0,0,0,0.06)",
+    backgroundColor: "rgba(255,255,255,0.06)",
     borderWidth: 1,
     borderColor: COLORS.border,
   },
@@ -652,7 +649,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: COLORS.border,
-    backgroundColor: "rgba(0,0,0,0.03)",
+    backgroundColor: "rgba(255,255,255,0.04)",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -664,11 +661,11 @@ const styles = StyleSheet.create({
     height: 34,
     paddingHorizontal: 12,
     borderRadius: 12,
-    backgroundColor: "#111",
+    backgroundColor: COLORS.primary,
     alignItems: "center",
     justifyContent: "center",
   },
-  smallPrimaryText: { color: "#fff", fontWeight: "900", fontSize: 12 },
+  smallPrimaryText: { color: COLORS.bg, fontWeight: "900", fontSize: 12 },
 
   friendRow: {
     flexDirection: "row",
@@ -678,40 +675,40 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     borderWidth: 1,
     borderColor: COLORS.border,
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(255,255,255,0.04)",
   },
   avatar: {
     width: 38,
     height: 38,
     borderRadius: 14,
-    backgroundColor: "rgba(0,0,0,0.06)",
+    backgroundColor: "rgba(115,255,173,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(115,255,173,0.30)",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: COLORS.border,
   },
-  avatarText: { color: COLORS.text, fontWeight: "900" },
-  friendText: { color: COLORS.text, fontSize: 13, fontWeight: "700", flex: 1 },
+  avatarText: { color: COLORS.primary, fontWeight: "900" },
+  friendText: { color: COLORS.muted, fontSize: 13, fontWeight: "700", flex: 1 },
 
   friendBtn: {
     flex: 1,
     height: 44,
     borderRadius: 16,
-    backgroundColor: "#111",
+    backgroundColor: COLORS.primary,
     alignItems: "center",
     justifyContent: "center",
   },
-  friendBtnText: { color: "#fff", fontWeight: "900" },
+  friendBtnText: { color: COLORS.bg, fontWeight: "900" },
 
   friendBtnGhost: {
     flex: 1,
     height: 44,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: COLORS.border,
-    backgroundColor: "rgba(0,0,0,0.03)",
+    borderColor: "rgba(115,255,173,0.30)",
+    backgroundColor: "rgba(115,255,173,0.10)",
     alignItems: "center",
     justifyContent: "center",
   },
-  friendBtnGhostText: { color: COLORS.text, fontWeight: "900" },
+  friendBtnGhostText: { color: COLORS.primary, fontWeight: "900" },
 });
