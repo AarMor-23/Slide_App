@@ -5,7 +5,7 @@ export default function UserLayout() {
     return (
         <Stack
             screenOptions={{
-                headerShown: true,
+                headerShown: false,
                 // headerBackTitleVisible: false,
                 // animation: "slide_from_right",
             }}
