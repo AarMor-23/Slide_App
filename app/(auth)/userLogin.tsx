@@ -35,7 +35,7 @@ export default function UserLogin() {
       await new Promise((r) => setTimeout(r, 600));
 
       // Example: route to your main app
-      router.replace("/"); // or "/(tabs)" if you use a tabs group
+      router.replace("/(business)/Home"); // or "/(tabs)" if you use a tabs group
     } catch (e) {
       Alert.alert("Login failed", "Please try again.");
     } finally {
